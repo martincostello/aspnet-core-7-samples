@@ -1,0 +1,32 @@
+html {
+    font-size: 16px;
+}
+
+a {
+    color: #0060C7;
+}
+
+img.user-profile {
+    max-height: 30px;
+    max-width: 30px;
+}
+
+.bg-dark {
+    background-image: linear-gradient(270deg, #ff8000 0%, #f75e28 50%);
+}
+
+.body-content {
+    padding-top: 10px;
+}
+
+.navbar-brand > svg {
+    fill: #ffffff;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #ffffff;
+}
+
+.w-90 {
+    width: 90% !important;
+}
