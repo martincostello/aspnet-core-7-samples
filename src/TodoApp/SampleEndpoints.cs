@@ -207,20 +207,20 @@ public static class SampleEndpoints
                 return Random.Shared.Next().ToString();
             });
 
-            // Samples for route handler filters:
+            // Samples for endpoint filters:
             // https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-preview-3/#support-for-route-handler-filters-in-minimal-apis
 
-            // This endpoint uses a lambda delegate to run code around the route handler delegate
+            // This endpoint uses a lambda delegate to run code around the endpoint delegate
             samples.MapGet("/filter-lambda", () => logger.LogInformation("During handler"))
                    .AddEndpointFilter(async (context, next) =>
             {
-                // The context parameter (which is of type RouteHandlerInvocationContext)
+                // The context parameter (which is of type EndpointFilterInvocationContext)
                 // contains information about the endpoint that is being executed, such
                 // as the route parameters, as well as access to the current HttpContext.
                 logger.LogInformation("Before handler");
 
-                // The next parameter is a RouteHandlerFilterDelegate delegate, which represents
-                // any additional route handler filters to execute, as well as the endpoint handler itself.
+                // The next parameter is an EndpointFilterDelegate delegate, which represents
+                // any additional endpoint filters to execute, as well as the endpoint handler itself.
                 var result = await next(context);
 
                 logger.LogInformation("After handler");
@@ -230,11 +230,11 @@ public static class SampleEndpoints
             });
 
             // This endpoint achieves the same goal as the example above, except it implements
-            // the new IRouteHandlerFilter interface to be strongly typed. This allows you to
+            // the new IEndpointFilter interface to be strongly typed. This allows you to
             // specify dependencies to inject into the constructor from the service collection,
             // as well as allowing you to unit test the filter directly.
             samples.MapGet("/filter-class", () => logger.LogInformation("During handler"))
-                   .AddEndpointFilter<MyRouteHandlerFilter>();
+                   .AddEndpointFilter<MyEndpointFilter>();
 
             // Samples for argument list parameter binding.
             // https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-preview-5/#minimal-api-parameter-binding-for-argument-lists
@@ -360,9 +360,9 @@ public static class SampleEndpoints
             => Task.FromResult(new string[] { "London", "Amsterdam" });
     }
 
-    private sealed class MyRouteHandlerFilter : IEndpointFilter
+    private sealed class MyEndpointFilter : IEndpointFilter
     {
-        public MyRouteHandlerFilter(ILogger<MyRouteHandlerFilter> logger)
+        public MyEndpointFilter(ILogger<MyEndpointFilter> logger)
         {
             Logger = logger;
         }
