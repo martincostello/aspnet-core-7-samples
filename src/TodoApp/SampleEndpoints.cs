@@ -6,6 +6,7 @@ using Amazon.S3.Model;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using TodoApp.Extensions;
 
 namespace TodoApp;
 
@@ -146,6 +147,23 @@ public static class SampleEndpoints
                     await client.PutObjectAsync(request);
                 }
             });
+
+            // This endpoint binds to a single file posted as part of an HTTP multipart upload
+            // but also validates the request has a valid anti-forgery cookie/header value
+            samples.MapPost("/upload-file", async (IFormFile blob, IAmazonS3 client) =>
+            {
+                using var stream = blob.OpenReadStream();
+
+                var request = new PutObjectRequest
+                {
+                    BucketName = "my-blob-bucket",
+                    Key = blob.FileName,
+                    InputStream = stream,
+                    AutoCloseStream = false
+                };
+
+                await client.PutObjectAsync(request);
+            }).ValidateAntiforgery();
 
             // Samples for consuming the raw HTTP body.
             // https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-net-7-preview-1/#bind-the-request-body-as-a-stream-or-pipereader
