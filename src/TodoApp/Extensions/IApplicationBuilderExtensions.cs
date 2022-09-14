@@ -23,7 +23,7 @@ public static class IApplicationBuilderExtensions
         if (context.User.Identity?.IsAuthenticated != true)
         {
             // Any requests that are not authenticated are not rate-limited.
-            return RateLimitPartition.CreateNoLimiter("anonymous");
+            return RateLimitPartition.GetNoLimiter("anonymous");
         }
 
         // Determine which set of rate limits to use. HTTP GET requests use a "read" set
@@ -36,7 +36,7 @@ public static class IApplicationBuilderExtensions
         // Requests are partitioned by the type of operation and the authenticated
         // user's ID. This means that rate limits are specific to individual users
         // so "noisy neighbours" should not affect the usage of well-behaved clients.
-        return RateLimitPartition.CreateTokenBucketLimiter(
+        return RateLimitPartition.GetTokenBucketLimiter(
             $"{operation}-RateLimit-{userId}",
             _ =>
             {
@@ -48,13 +48,15 @@ public static class IApplicationBuilderExtensions
                 var tokenLimit = section.GetValue<int>("TokenLimit");
                 var tokensPerPeriod = section.GetValue<int>("TokensPerPeriod");
 
-                return new TokenBucketRateLimiterOptions(
-                    tokenLimit,
-                    queueProcessingOrder,
-                    queueLimit,
-                    replenishmentPeriod,
-                    tokensPerPeriod,
-                    autoReplenishment);
+                return new()
+                {
+                    AutoReplenishment = autoReplenishment,
+                    QueueLimit = queueLimit,
+                    QueueProcessingOrder = queueProcessingOrder,
+                    TokenLimit = tokenLimit,
+                    TokensPerPeriod = tokensPerPeriod,
+                    ReplenishmentPeriod = replenishmentPeriod,
+                };
             });
     }
 
