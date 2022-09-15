@@ -55,7 +55,7 @@ app.UseSwagger();
 // Add the HTTP endpoints and configure rate-limiting for the API
 app.MapAuthenticationRoutes();
 
-app.UseRateLimiting();
+app.UseRateLimiter();
 app.MapTodoApiRoutes();
 
 // Add Razor Pages for the UI

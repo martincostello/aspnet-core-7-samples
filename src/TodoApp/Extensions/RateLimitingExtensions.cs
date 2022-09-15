@@ -4,21 +4,21 @@ using TodoApp;
 
 namespace Microsoft.AspNetCore.Builder;
 
-public static class IApplicationBuilderExtensions
+public static class RateLimitingExtensions
 {
-    public static IApplicationBuilder UseRateLimiting(this IApplicationBuilder app)
+    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
     {
-        app.UseRateLimiter(new()
+        services.AddRateLimiter(options =>
         {
-            RejectionStatusCode = StatusCodes.Status429TooManyRequests,
-            GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(CreateRateLimiter),
-            OnRejected = OnRateLimited,
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(CreateRateLimiter);
+            options.OnRejected = OnRateLimited;
         });
 
-        return app;
+        return services;
     }
 
-    public static RateLimitPartition<string> CreateRateLimiter(HttpContext context)
+    private static RateLimitPartition<string> CreateRateLimiter(HttpContext context)
     {
         if (context.User.Identity?.IsAuthenticated != true)
         {
@@ -62,7 +62,7 @@ public static class IApplicationBuilderExtensions
 
     private static readonly MetadataName<TimeSpan> RetryAfterMetadata = new("RETRY_AFTER");
 
-    public static async ValueTask OnRateLimited(OnRejectedContext context, CancellationToken cancellationToken)
+    private static async ValueTask OnRateLimited(OnRejectedContext context, CancellationToken cancellationToken)
     {
         // By default use a Retry-After value of one second.
         var retryAfter = TimeSpan.FromSeconds(1);
