@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.Metadata;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TodoApp;
@@ -12,10 +13,10 @@ public sealed class RateLimitedResult : IResult, IEndpointMetadataProvider
         _retryAfter = retryAfter;
     }
 
-    public static void PopulateMetadata(EndpointMetadataContext context)
+    public static void PopulateMetadata(MethodInfo method, EndpointBuilder builder)
     {
-        ArgumentNullException.ThrowIfNull(context);
-        context.EndpointMetadata.Add(
+        ArgumentNullException.ThrowIfNull(builder);
+        builder.Metadata.Add(
             new ProducesProblemResponseMetadata(StatusCodes.Status429TooManyRequests));
     }
 
