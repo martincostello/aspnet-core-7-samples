@@ -6,16 +6,16 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static class RateLimitingExtensions
 {
-    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+    public static IApplicationBuilder UseRateLimiting(this IApplicationBuilder app)
     {
-        services.AddRateLimiter(options =>
+        app.UseRateLimiter(new()
         {
-            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(CreateRateLimiter);
-            options.OnRejected = OnRateLimited;
+            RejectionStatusCode = StatusCodes.Status429TooManyRequests,
+            GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(CreateRateLimiter),
+            OnRejected = OnRateLimited,
         });
 
-        return services;
+        return app;
     }
 
     private static RateLimitPartition<string> CreateRateLimiter(HttpContext context)
