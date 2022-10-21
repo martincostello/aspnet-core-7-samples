@@ -150,7 +150,7 @@ public static class SampleEndpoints
 
             // This endpoint binds to a single file posted as part of an HTTP multipart upload
             // but also validates the request has a valid anti-forgery cookie/header value
-            samples.MapPost("/upload-file", async (IFormFile blob, IAmazonS3 client) =>
+            samples.MapPost("/upload-file-xsrf", async (IFormFile blob, IAmazonS3 client) =>
             {
                 using var stream = blob.OpenReadStream();
 
