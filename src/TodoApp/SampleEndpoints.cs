@@ -12,16 +12,6 @@ namespace TodoApp;
 
 public static class SampleEndpoints
 {
-    public static void MapRoutes(this IEndpointRouteBuilder app)
-    {
-        app.MapGet("/stream-blob/{id}", (string id, IAmazonS3 client) =>
-        {
-            return Results.Stream(
-                async (stream) => await client.GetObjectStreamAsync(
-                    "my-blob-bucket", id, null));
-        });
-    }
-
     public static void MapUserRoutes(this IEndpointRouteBuilder builder)
     {
         var group = builder.MapGroup("/api/users")
@@ -303,9 +293,11 @@ public static class SampleEndpoints
             // https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-preview-3/#new-results-stream-overloads
 
             // This endpoint allows the response from S3 to be streamed to the client
-            samples.MapGet("/stream-blob/{id}", (string blob, IAmazonS3 client) =>
+            samples.MapGet("/stream-blob/{id}", (string id, IAmazonS3 client) =>
             {
-                return Results.Stream(async (stream) => await client.GetObjectStreamAsync("my-blob-bucket", blob, null));
+                return Results.Stream(
+                    async (stream) =>
+                        await client.GetObjectStreamAsync("my-blob-bucket", id, null));
             });
 
             // Samples for simplified authentication/authorization
