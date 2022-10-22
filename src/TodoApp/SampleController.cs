@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TodoApp;
 
+[ApiController]
 public class SampleController : Controller
 {
     // MVC action methods now implicitly resolve parameters from services
