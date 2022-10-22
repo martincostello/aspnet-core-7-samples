@@ -12,38 +12,6 @@ namespace TodoApp;
 
 public static class SampleEndpoints
 {
-    public static void MapUserRoutes(this IEndpointRouteBuilder builder)
-    {
-        var group = builder.MapGroup("/api/users")
-                           .RequireAuthorization()
-                           .WithGroupName("users");
-
-        group.MapPost("/", () =>
-        {
-            var id = Guid.NewGuid().ToString();
-            return Results.Created($"/api/users/{id}", new { id });
-        });
-
-        group.MapGet("/", () =>
-        {
-            return Results.Ok(new[]
-            {
-                new{ id = "Martin" },
-                new{ id = "John" }
-            });
-        });
-
-        group.MapGet("/{id}", (string id) =>
-        {
-            return Results.Ok(new { id });
-        });
-
-        group.MapDelete("/{id}", (string id) =>
-        {
-            return Results.NoContent();
-        });
-    }
-
     public static IServiceCollection AddSamples(this IServiceCollection services)
     {
         services.AddSingleton<IAmazonS3, AmazonS3Client>();
