@@ -278,6 +278,21 @@ public static class SampleEndpoints
             // This endpoint requires the user to be authenticated and have the "admin" scope claim
             samples.MapGet("/secret/admin", (ClaimsPrincipal user) => $"Hello {user.Identity?.Name}. You are an admin!")
                    .RequireAuthorization(p => p.RequireClaim("scope", "admin"));
+
+            // Samples for OpenAPI improvements
+            // https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-preview-2/#provide-endpoint-descriptions-and-summaries-for-minimal-apis
+            // https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-preview-4/#openapi-improvements-for-minimal-apis
+            samples.MapGet("/{x:int}/add/{y:int}", (int x, int y) => new { sum = x + y })
+                   .WithSummary("Add two integers")
+                   .WithDescription("Adds two integers and returns their sum");
+
+            samples.MapGet("/{x:int}/multiply/{y:int}", (int x, int y) => new { product = x * y })
+                   .WithOpenApi(operation =>
+                   {
+                       operation.Summary = "Multiplies two integers";
+                       operation.Description = "Multiplies two integers and returns their product";
+                       return operation;
+                   });
         }
 
         builder.MapDefaultControllerRoute();
