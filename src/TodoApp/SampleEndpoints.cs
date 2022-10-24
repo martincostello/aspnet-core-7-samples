@@ -79,7 +79,7 @@ public static class SampleEndpoints
                     {
                         BucketName = "my-blob-bucket",
                         Key = second.FileName,
-                        InputStream = blob1,
+                        InputStream = blob2,
                         AutoCloseStream = false
                     };
 
