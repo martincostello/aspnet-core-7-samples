@@ -222,7 +222,7 @@ public static class SampleEndpoints
                 FindUsersHandler handler,
                 CancellationToken cancellationToken) =>
             {
-                await handler.ProcessAsync(request, cancellationToken);
+                return await handler.ProcessAsync(request, cancellationToken);
             });
 
             // Samples for typed results
@@ -333,8 +333,8 @@ public static class SampleEndpoints
 
     private sealed class FindUsersHandler
     {
-        public Task ProcessAsync(FindUsersRequest request, CancellationToken cancellationToken)
-            => Task.CompletedTask;
+        public Task<string[]> ProcessAsync(FindUsersRequest request, CancellationToken cancellationToken)
+            => Task.FromResult(Array.Empty<string>());
     }
 
     private record CreateUser(
