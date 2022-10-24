@@ -284,7 +284,8 @@ public static class SampleEndpoints
             // https://devblogs.microsoft.com/dotnet/asp-net-core-updates-in-dotnet-7-preview-4/#openapi-improvements-for-minimal-apis
             samples.MapGet("/{x:int}/add/{y:int}", Maths.Add)
                    .WithSummary("Add two integers")
-                   .WithDescription("Adds two integers and returns their sum");
+                   .WithDescription("Adds two integers and returns their sum")
+                   .WithTags("Maths");
 
             samples.MapGet("/{x:int}/multiply/{y:int}", Maths.Multiply)
                    .WithOpenApi(operation =>
